@@ -8,6 +8,8 @@ pusher_client = pusher.Pusher(
   cluster='ap2'
 )
 def index(request):
+    channel_subscriber = pusher.channel_info(u'presence-chatroom', [u"subscription_count"])["subscription_count"]
+    channel_user = pusher.channel_info(u'presence-chatroom', [u"user_count"])['user_count']
     pushed_text = request.POST.get('text')
     my_dict = {'message': pushed_text}
     pusher_client.trigger('my-channel', 'my-event', my_dict)
