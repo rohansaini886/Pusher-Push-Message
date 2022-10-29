@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+    crossorigin="anonymous"
+  />
+  <title>Push Message</title>
+  <style>
+    textarea{
+    border-color: #cc1111;
+    margin-left: 10px;
+    border: 2px;
+    border-radius: 8px;
+    padding: 10px 100px;
+    line-height: 18px; 
+    font-size: 25px;  
+}
+  </style>
+</head>
+<body style = 'background-color: aqua;'>
+  <h1 style = "text-align: center;">Push Message</h1><br>
+  <div>
+
+    <h2 style = "text-align: center;">Total Subscribers: <span id="subs"></span></h2>
+  </div><br>
+  <div class="container">
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <h3><span id="typed"></span></h3>
+        <textarea
+          class="form-control"
+          name="text"
+          id="exampleFormControlTextarea1"
+          rows="9"
+          required
+        ></textarea>
+      </div><br>
+      <h2 style = "text-align: center;">Open the same link in new tab and refresh this tab. And you will be able to see the your Pushed message.</h1><br>
+      <button type="submit" style ='margin-left : 47%;'class="btn btn-dark mt-2">Push Message</button>
+    </form>
+    <br>
+  </div>
+  <h3 style = "text-align: center;">
+  <ul id="msg"></ul>
+  </h3>
+  <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher("82433bfd69df6eaab70a", {
+      cluster: "ap2",
+    });
+
+    var channel = pusher.subscribe("my-channel");
+    channel.bind("pusher:subscription_count", (data) => {
+      console.log("new subscriber", data);
+      document.getElementById("subs").innerHTML = data.subscription_count
+    });
+    channel.bind("my-event", function (data) {
+      if (data.message) {
+        var ul = document.getElementById("msg");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(data.message));
+        ul.appendChild(li);
+      }
+    });
+
+  </script>
+</body>
